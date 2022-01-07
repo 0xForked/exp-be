@@ -1,9 +1,12 @@
-const express = require("express");
+const express = require("express")
+const toAllUser = require("./toAll")
+const toSpecifiedUser = require("./toSpecified")
 
 module.exports = function (app) {
-    const ProtectedRouter = express.Router();
+    const ProtectedRouter = express.Router()
 
-    // ProtectedRouter.post("/", send);
+    ProtectedRouter.post("/", toAllUser)
+    ProtectedRouter.post("/:userId", toSpecifiedUser)
 
-    app.use("/notifications", ProtectedRouter);
-};
+    app.use("/notifications", ProtectedRouter)
+}

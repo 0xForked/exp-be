@@ -13,6 +13,6 @@ module.exports = function(req, res) {
     db.collection('users')
         .doc(userId)
         .update({ fcm_token: fcmToken })
-        .then(() => {res.send({ code: 205, message: "reset content" })})
+        .then(() => { res.send({ code: 205, message: "reset content" }) })
         .catch(reason => { res.send({ code: 400, message: reason }) })
 }
