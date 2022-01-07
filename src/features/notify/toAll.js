@@ -9,16 +9,18 @@ module.exports = function(req, res) {
             const messages = []
 
             snapshot.forEach((doc) => {
-                messages.push({
-                    data: {
-                        user_id: doc.id
-                    },
-                    notification: { 
-                        title: 'coba notify',
-                        body: 'ini cuma coba kirim notifikasi'
-                    },
-                    token: doc.data().fcm_token,
-                })
+                if (doc.data().fcm_token) {
+                    messages.push({
+                        data: {
+                            user_id: doc.id
+                        },
+                        notification: { 
+                            title: 'coba notify',
+                            body: `ini cuma coba kirim notifikasi ke : ${doc.id}`
+                        },
+                        token: doc.data().fcm_token,
+                    })
+                }
             })
             
             fa.messaging().sendAll(messages).then((response) => {
