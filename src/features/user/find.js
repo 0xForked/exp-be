@@ -17,6 +17,7 @@ module.exports = function(req, res) {
                 email: snapshot.data().email,
                 name: snapshot.data().name,
                 fcm_token: snapshot.data().fcm_token,
+                fresh_chat: snapshot.data().fresh_chat
             }
             
             res.send(user)
