@@ -12,6 +12,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@livechat/lc-sdk-js": "^4.0.0",
     "axios": "^0.25.0",
     "cors": "^2.8.5",
     "express": "^4.17.2",
