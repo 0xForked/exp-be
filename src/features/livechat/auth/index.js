@@ -1,10 +1,9 @@
 const express = require("express")
-const token = require("./token")
 
 module.exports = function (app) {
     const ProtectedRouter = express.Router()
 
-    ProtectedRouter.get("/", token)
+    // ProtectedRouter.get("/", function)
 
     app.use("/livechat/auth", ProtectedRouter)
 }

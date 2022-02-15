@@ -1,10 +1,10 @@
 const express = require("express")
-const chatList = require("./chatList")
+const conversations = require("./conversations")
 
 module.exports = function (app) {
     const ProtectedRouter = express.Router()
 
-    ProtectedRouter.get("/", chatList)
+    ProtectedRouter.get("/conversations", conversations)
 
     app.use("/livechat/agent", ProtectedRouter)
 }

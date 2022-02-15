@@ -1,13 +1,15 @@
 const user = require('../features/user')
+const ecommerce = require('../features/ecommerce')
 // const notify = require('../features/notify')
-// const freshchat = require('../features/freshchat')
-// const liveChatAuth = require('../features/livechat/auth')
-const liveChatAgent = require('../features/livechat/agent')
+// const freshChat = require('../features/freshchat')
+const liveChat = require('../features/livechat')
+// const tawkChat = require('../features/tawk')
 
 module.exports = function (app) {
     user(app)
+    ecommerce(app)
     // notify(app)
-    // freshchat(app)
-    // liveChatAuth(app)
-    liveChatAgent(app)
+    // freshChat(app)
+    liveChat(app)
+    // tawkChat(app)
 }
