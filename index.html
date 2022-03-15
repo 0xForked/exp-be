@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Configuration page</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600"
+      media="all"
+    />
+
+    <!-- Axios library for API calls -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- Sign in with LiveChat SDK-->
+    <script src="https://cdn.livechatinc.com/accounts/accounts-sdk.min.js"></script>
+  </head>
+
+  <body>
+    <div class="grid-container">
+      <div class="livechat-authorization">
+        <div class="lc-form-group__label authorization">
+          Use the button below to send the authorization code
+        </div>
+        <!-- Sign in with LiveChat Button -->
+        <a href="" onclick="instance.openPopup()">
+          <div id="livechat-login-button" class="livechat-login-button"></div>
+        </a>
+        <div class="lc-divider" />
+      </div>
+
+      <div class="livechat-authorization-done">
+        <form id="livechat-authorization-done" style="display:none;">
+          <div
+            class="lc-form-group__label authorization authorization-done"
+          ></div>
+        </form>
+        <div class="lc-divider" />
+      </div>
+    </div>
+
+    <script>
+      let accessToken = null;
+      let wsConn = null;
+
+      // Obtaining data about authorized user
+      const instance = AccountsSDK.init({
+        client_id: "535a343e2270e36325f644f939527691",
+        response_type: "code",
+        onIdentityFetched: (error, data) => {
+          if (data) {
+            console.log(data);
+            console.log("User authorized!");
+            console.log("License number: " + data.license);
+            auth(data)
+          } else {
+            console.log(error);
+          }
+        }
+      });
+
+      // Sending authorization code to the server
+      function auth(data) {
+        const apiInstance = axios.create({
+          baseURL: "http://127.0.0.1:3000/livechat/auth",
+        });
+        
+        apiInstance
+          .post('/agent?action=exchange_code', {
+            code: data.code
+          }).then(response => {
+            const data = response.data.payload
+            document.getElementById("livechat-login-button").style.display = "none";
+            document.querySelector(".authorization").innerHTML = "Authorized!";
+            document.getElementById("livechat-authorization-done").style.display = "block";
+            document.querySelector(".authorization-done").innerHTML = `
+            <table> 
+              <tr>
+                <td> Organization ID: ${ data.organization_id }</td>
+              </tr>
+              <tr>
+                <td> Account ID: ${ data.account_id }</td>
+              </tr>
+              <tr>
+                <td> Email Address: ${ data.entity_id }</td>
+              </tr>
+              <tr>
+                <td> Access Token: ${ data.access_token }</td>
+              </tr>
+              <tr>
+                <td> Refresh Token: ${ data.refresh_token }</td>
+              </tr>
+              <tr>
+                <td> Type Token: ${ data.token_type }</td>
+              </tr>
+            </table>
+            `;
+
+            accessToken = `Bearer ${ data.access_token }`;
+            startWsConn()
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
+    
+      function startWsConn() {
+        if (accessToken !== null) {
+          wsConn =  new WebSocket("wss://api.livechatinc.com/v3.4/agent/rtm/ws")
+
+          wsConn.onopen = (event) => onWsOpen(event)
+
+          wsConn.onmessage = (event) => onWsMessage(event)
+        }
+      }
+
+      function onWsOpen() { 
+        wsConn.send(JSON.stringify({
+          action: "login",
+          payload: { token: accessToken }
+        }))
+      }
+
+      function onWsMessage(event) {
+        const msg = JSON.parse(event.data)
+        
+        switch(msg.action) {
+          case 'login':
+          case 'incoming_event':
+            // TODO: call load chat list function
+            // loadChatList()
+            break;
+          case 'list_chats':
+            // TODO: list chat callback (dismiss loading and show list chat)
+            // display message list 
+            // 
+            break;
+          default:
+            console.log(msg.action)
+            console.log(msg.payload)
+        }
+      }
+    </script>
+  </body>
+</html>

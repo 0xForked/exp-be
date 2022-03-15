@@ -2,8 +2,6 @@ const express = require("express")
 
 module.exports = function (app) {
     const ProtectedRouter = express.Router()
-
-    // ProtectedRouter.get("/", function)
-
-    app.use("/livechat/customer", ProtectedRouter)
+    
+    app.use("/livechat/account", ProtectedRouter)
 }

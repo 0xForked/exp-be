@@ -1,9 +1,7 @@
 const liveChatAuth = require('./auth')
-const liveChatAgent = require('./agent')
-const liveChatCustomer = require('./customer')
+const liveChatAccount = require('./account')
 
 module.exports = function (app) {
     liveChatAuth(app)
-    liveChatAgent(app)
-    liveChatCustomer(app)
+    liveChatAccount(app)
 }
