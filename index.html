@@ -25,22 +25,36 @@
         <a href="" onclick="instance.openPopup()">
           <div id="livechat-login-button" class="livechat-login-button"></div>
         </a>
-        <div class="lc-divider" />
+        <hr>
       </div>
 
       <div class="livechat-authorization-done">
-        <form id="livechat-authorization-done" style="display:none;">
-          <div
-            class="lc-form-group__label authorization authorization-done"
-          ></div>
-        </form>
-        <div class="lc-divider" />
+        <div id="livechat-authorization-done" style="display:none;">
+          <div class="lc-form-group__label authorization authorization-done"></div>
+        </div>
+        <hr>
+        <div id="livechat-agent-conversation" style="display:none;">
+          <h5 class="livechat-agent-conversation-title" style="font-size: 21px;"></h5>
+          <div style="display: flex; flex-direction: row;">
+            <div class="livechat-agent-conversation-chats" style="background: black;flex-basis: 25%;margin-right: 20px;padding: 4px;"></div>
+            <div class="livechat-agent-conversation-messages" style="background: gray;flex-basis: 75%;padding: 4px;">
+              
+              <form action="" style="display: flex;flex-direction: row;">
+                <input type="text" name="message" id="message" placeholder="Type your message here..." style="flex-basis: 75%;">
+                <button type="submit" id="send-message" style="flex-basis: 25%;">Send</button>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
+
+
     </div>
 
     <script>
       let accessToken = null;
       let wsConn = null;
+      let selectedChat = null;
 
       // Obtaining data about authorized user
       const instance = AccountsSDK.init({
@@ -102,7 +116,9 @@
             console.log(error);
           });
       }
-    
+
+      // =================================================
+      // WebSocket connection
       function startWsConn() {
         if (accessToken !== null) {
           wsConn =  new WebSocket("wss://api.livechatinc.com/v3.4/agent/rtm/ws")
@@ -126,18 +142,80 @@
         switch(msg.action) {
           case 'login':
           case 'incoming_event':
-            // TODO: call load chat list function
-            // loadChatList()
+            loadChats()
             break;
           case 'list_chats':
-            // TODO: list chat callback (dismiss loading and show list chat)
-            // display message list 
-            // 
+            displayChatBox(msg.payload)
             break;
           default:
             console.log(msg.action)
             console.log(msg.payload)
         }
+      }
+
+      // =================================================
+      // ACTIONS
+
+      /*
+       *
+       * Load chats
+       *
+       */
+      function loadChats() {
+        wsConn.send(JSON.stringify({
+          action: "list_chats",
+          payload: {}
+        }))
+      }
+      /* 
+       * 
+       * Display chat box area
+       *
+       */
+      function displayChatBox(payload) {
+        document.getElementById("livechat-agent-conversation").style.display = "block";
+        document.querySelector(".livechat-agent-conversation-title").innerHTML =  `Chats (${ payload.found_chats })`;
+        var chatArea = document.querySelector('.livechat-agent-conversation-chats');
+        payload.chats_summary.forEach(chat => {
+          chatArea.innerHTML +=  `
+            <div style="background:gray;display:flex;flex-direction:column;padding:8px 14px;margin:8px;">
+              <h5 style="font-size:18px;margin:0;color:white;">${ chat.last_event_per_type.filled_form.event.fields[0].answer }</h5>
+              <p style="margin:0;color:white;">${ formatDate(chat.last_event_per_type.filled_form.event.created_at) }</p>
+            </div>
+          `;
+        });
+      }
+
+
+      function setSelectedChat(chat) {
+        selectedChat = chat
+        loadMessage(chat.id)
+      }
+
+      // function loadMessage(id) {
+      //   wsConn.send(JSON.stringify({
+      //     action: "get_chat",
+      //     payload: { chat_id: id }
+      //   }))
+      // }
+
+      // function sendMessage() {
+      //   wsConn.send(JSON.stringify({
+      //     action: "send_event",
+      //     payload: {
+      //       chat_id: this.selectedChat.id, 
+      //       event: {
+      //         type: "message",
+      //         text: this.message
+      //       }
+      //     }
+      //   }))
+      // }
+
+
+      function formatDate(date) {
+        const createdAt = new Date(date);
+        return `${createdAt.getDate()} ${createdAt.toLocaleString('default', { month: 'long' })}`;
       }
     </script>
   </body>
