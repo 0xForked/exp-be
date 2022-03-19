@@ -1,4 +1,4 @@
-const livechat = require("../../../services/livechat/index")
+const livechat = require("@services/livechat")
 
 module.exports = function(req, res) {
   return exchange(req, res)

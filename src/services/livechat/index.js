@@ -1,16 +1,7 @@
-const credentials = require("../../../credentials.json")
+const credentials = require("@configs/credentials.json")
+
 const axios = require("axios");
 
-const requestOption = function (options) {
-  return {
-    options,
-    headers: { 
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin' : '*',
-      'Access-Control-Allow-Methods': 'POST, GET',
-    }
-  }
-}
 
 const authBody = (authCode) => {
   return {
@@ -22,7 +13,7 @@ const authBody = (authCode) => {
   }
 };
 
-const authRefreshBody =  (refreshToken) => {
+const authRefreshBody = (refreshToken) => {
   return {
     grant_type: "refresh_token",
     refresh_token: refreshToken,
@@ -31,13 +22,24 @@ const authRefreshBody =  (refreshToken) => {
   }
 };
 
-const accountsApi = axios.create({
-  baseURL: "https://accounts.livechatinc.com"
+const accountsApi = axios.create({baseURL: credentials.livechat.accApiUrl});
+
+const messagingApi =axios.create({
+  baseURL: credentials.livechat.msgApiUrl,
+  auth: {
+    username: credentials.livechat.account_id,
+    password: credentials.livechat.personal_access_token
+  },
+  headers: { 
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin' : '*',
+    'Access-Control-Allow-Methods': 'POST, GET',
+  },
 });
 
 module.exports = {
-  requestOption: requestOption,
-  accountsApi: accountsApi,
   authBody: authBody,
-  authRefreshBody: authRefreshBody
+  authRefreshBody: authRefreshBody,
+  accountsApi: accountsApi,
+  messagingApi: messagingApi,
 };

@@ -1,15 +1,15 @@
-const user = require('../features/user')
-const ecommerce = require('../features/ecommerce')
-// const notify = require('../features/notify')
-// const freshChat = require('../features/freshchat')
-const liveChat = require('../features/livechat')
-// const tawkChat = require('../features/tawk')
+const ecommerce = require('@features/ecommerce')
+const liveChat = require('@features/livechat')
+// const user = require('@features/user')
+// const notify = require('@features/notify')
+// const freshChat = require('@features/freshchat')
+// const tawkChat = require('@features/tawk')
 
 module.exports = function (app) {
-    user(app)
     ecommerce(app)
+    liveChat(app)
+    // user(app)
     // notify(app)
     // freshChat(app)
-    liveChat(app)
     // tawkChat(app)
 }

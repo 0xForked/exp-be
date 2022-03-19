@@ -1,4 +1,4 @@
-const fa = require('../../services/firebase')
+const fa = require('@services/firebase')
 
 module.exports = function(req, res) {
     const db = fa.firestore()
@@ -12,13 +12,16 @@ module.exports = function(req, res) {
             snapshot.forEach((doc) => {
                 if (!req.query.storeId) {
                     products.push({ ...doc.data() })
-                } else if (doc.data().storeId.replace(/\s+/g, '') === req.query.storeId.replace(/\s+/g, '')) {
+                } else if (
+                    doc.data().storeId.replace(/\s+/g, '') === 
+                    req.query.storeId.replace(/\s+/g, '')
+                ) {
                     products.push(doc.data())
                 }
             })
 
             if (products.length <= 0) {
-                res.send({ code: 404, message: "not found" }) 
+                res.send({ code: 404, message: "NOT_FOUND" }) 
             }
             
             res.send({ products: products, pagination: {

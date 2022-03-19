@@ -8,5 +8,5 @@ module.exports = function (app) {
     ProtectedRouter.post("/agent", agent);
     ProtectedRouter.post("/customer", customer);
     
-    app.use("/livechat/auth", ProtectedRouter)
+    app.use("/lc/auth", ProtectedRouter)
 }

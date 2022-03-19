@@ -1,22 +1,21 @@
-const firebase = require("firebase-admin")
-const firebaseCredentials = require("../../../firebase.json")
+const credentials = require("@configs/firebase.json")
 
-const createClient = function () {
+const firebase = require("firebase-admin")
+
+const client = function () {
   let instance
 
   if (!instance) {
     instance = firebase.initializeApp({
-      credential: firebase.credential.cert(firebaseCredentials)
+      credential: firebase.credential.cert(credentials)
     }, "[DEFAULT]")
 
-    const firestoreSettings = {}
-    
     firebase
       .firestore()
-      .settings(firestoreSettings)
+      .settings({})
   }
   
   return instance
 }
 
-module.exports = createClient()
+module.exports = client()

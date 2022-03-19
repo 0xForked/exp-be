@@ -1,25 +1,33 @@
 {
-  "name": "test-firebase-admin",
+  "name": "-exp-",
   "version": "1.0.0",
-  "description": "Just Test Firebase Admin",
+  "description": "Exploring Express.js",
   "main": "index.js",
   "license": "MIT",
-  "engines": {
-    "node": "14"
+  "engines": { "node": "^14.18" },
+  "_moduleAliases": {
+    "@root": ".",
+    "@configs": "configs",
+    "@views": "views",
+    "@app": "src/app",
+    "@features": "src/features",
+    "@services": "src/services"
   },
+  "_moduleDirectories": [],
   "scripts": {
     "dev": "nodemon index.js",
     "test": "jest"
   },
   "dependencies": {
-    "@livechat/lc-sdk-js": "^4.0.0",
     "axios": "^0.25.0",
     "cors": "^2.8.5",
     "express": "^4.17.2",
-    "firebase-admin": "^9.11.1"
+    "firebase-admin": "^9.11.1",
+    "nodemailer": "^6.7.2"
   },
   "devDependencies": {
     "jest": "^27.4.3",
+    "module-alias": "^2.2.2",
     "nodemon": "^2.0.15"
   }
 }

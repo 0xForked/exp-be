@@ -1,4 +1,4 @@
-const fa = require('../../services/firebase')
+const fa = require('@services/firebase')
 
 module.exports = function(req, res) {
     const db = fa.firestore()
@@ -13,7 +13,7 @@ module.exports = function(req, res) {
             })
 
             if (categories.length <= 0) {
-                res.send({ code: 404, message: "not found" }) 
+                res.send({ code: 404, message: "NOT_FOUND" }) 
             }
             
             res.send({ categories: categories})

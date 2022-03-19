@@ -1,11 +1,9 @@
-const app = require('./src/app')
+require('module-alias/register')
 
+const app = require('@app')
 const http = require('http')
-
 const server = http.createServer(app)
 
-const port = 3000
-
-console.log(`Running express on port ${port}`)
-
-server.listen(port)
+server.listen(8000, () => {
+  console.log(`Running express on port: 8000`)
+})
