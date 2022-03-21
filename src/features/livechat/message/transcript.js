@@ -26,7 +26,7 @@ async function processEvent(req, res) {
       'chat_id': req.body.chat_id, 
       'thread_id': req.body.thread_id
     }
-  ).then((response) => {
+  ).then(async (response) => {
     const emailBody = chatTranscriptTemplate(response.data)
     
     const emailPayload = {
@@ -36,6 +36,20 @@ async function processEvent(req, res) {
       html: emailBody,
     }
 
+    await livechatService.messagingApi.post(
+      '/agent/action/deactivate_chat', 
+      {
+        'id': req.body.chat_id, 
+        'ignore_requester_presence': true
+      }
+    ).then((response) => {
+      console.log('success', response.data)
+    }).catch((err) => res.status(err.response.status).send({ 
+      code: err.response.status, 
+      message: err.response.statusText.toUpperCase(),
+      data: err.response.data
+    }))
+
     emailService.sendMail(
       emailPayload, 
       (error, status) => res.status(error ? 400 : 200).send({ 
@@ -44,9 +58,9 @@ async function processEvent(req, res) {
         data: error ? null : status,
         add: response.data
       }))
-  }).catch((error) => res.status(400).send({ 
-    code: 400, 
-    message: "BAD_REQUEST",
-    data: error
+  }).catch((error) => res.status(error.response.status).send({ 
+    code: error.response.status, 
+    message: error.response.statusText.toUpperCase(),
+    data: error.response.data
   }))
 }

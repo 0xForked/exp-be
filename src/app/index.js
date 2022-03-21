@@ -11,7 +11,10 @@ app.use(express.urlencoded({ extended: true }))
 var allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:8080',
-  'http://localhost:8100'
+  'capacitor://localhost',
+  'ionic://localhost',
+  'http://localhost',
+  'http://localhost:8100',
 ];
 app.use(cors({
   origin: true,
@@ -19,18 +22,12 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Credentials'],
   origin: function(origin, callback){
-    // allow requests with no origin 
-    // (like mobile apps or curl requests)
-    if(!origin) return callback(null, true);
-    
-    if(allowedOrigins.indexOf(origin) === -1){
-      var msg = 'The CORS policy for this site does not ' +
-                'allow access from the specified Origin.';
-
-      return callback(new Error(msg), false);
+    // return callback(null, true);
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Origin not allowed by CORS'));
     }
-
-    return callback(null, true);
   }
 }))
 // register modules routes

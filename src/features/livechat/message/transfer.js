@@ -8,20 +8,28 @@ module.exports = function(req, res) {
       message: "UNPROCESSABLE_ENTITY" 
     })
   }
+
+  return processEvent(req, res)
 }
 
-
-// FE LOAD
-// https://api.livechatinc.com/v3.4/agent/action/list_agents_for_transfer 
-// show agent list with active chat
-// active chat >= 5 block trasfer
-// active chat < 5 give access to transfer
-// https://api.livechatinc.com/v3.4/agent/action/transfer_chat
-// payload transfer
-// {
-//   "id": "PJ0MRSHTDG",
-//   "target": {
-//     "type": "agent",
-//     "ids": [ "josep@tikon.id" ]
-//   }
-// }
+async function processEvent(req, res) { 
+    await livechatService.messagingApi.post(
+      '/agent/action/transfer_chat', 
+      {
+        "id": req.body.chat_id, 
+        "target": {
+          "type": "agent",
+          "ids": [ req.body.agent_id ]
+        },
+        "ignore_requester_presence": true,
+      }
+    ).then(async (response) => res.status(200).send({ 
+      code: 200, 
+      message: "OK",
+      data: response.data,
+    })).catch((error) => res.status(error.response.status).send({ 
+      code: error.response.status, 
+      message: error.response.statusText.toUpperCase(),
+      data: error.response.data
+    }))
+}
