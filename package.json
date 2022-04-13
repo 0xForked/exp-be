@@ -4,7 +4,9 @@
   "description": "Exploring Express.js",
   "main": "index.js",
   "license": "MIT",
-  "engines": { "node": "^14.18" },
+  "engines": {
+    "node": "^14"
+  },
   "_moduleAliases": {
     "@root": ".",
     "@configs": "configs",

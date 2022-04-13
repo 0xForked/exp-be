@@ -7,7 +7,8 @@ const client = function () {
 
   if (!instance) {
     instance = firebase.initializeApp({
-      credential: firebase.credential.cert(credentials)
+      credential: firebase.credential.cert(credentials),
+      storageBucket: 'gs://just-test-features.appspot.com'
     }, "[DEFAULT]")
 
     firebase
